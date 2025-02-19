@@ -49,7 +49,6 @@ class Character(db.Model):
     def serialize(self):
         return {
             "id": self.id,
-            "email": self.email,
             "name": self.name,
             "birth_year": self.birth_year,
             "eye_color": self.eye_color,
@@ -87,7 +86,7 @@ class Planet(db.Model):
     surface_water = db.Column(db.Integer,unique=False  , nullable=False )
     terrain = db.Column(db.String(20),unique=False  , nullable=False ) 
     url = db.Column(db.String(200),unique=False  , nullable=False )
-    # relation_favorite = db.relationship('Favorite' , backref='planet')
+    relation_favorite = db.relationship('Favorite_Planet' , backref='planet')
 
     def __repr__(self):
         return '<Planet %r>' % self.name
@@ -121,7 +120,7 @@ class Favorite_Character(db.Model):
     id_user = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     def __repr__(self):
-        return '<Favorite_Character %r>' % self.id
+        return '<Favorite_Character id_user=%r, id_character=%r>' % (self.id_user, self.id_people)
     
 
     def serialize(self):
