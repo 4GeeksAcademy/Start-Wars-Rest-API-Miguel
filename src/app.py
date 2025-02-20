@@ -142,20 +142,25 @@ def post_favorite_planet(id_us,id_pla):
 ############################################################################################
 #################################----METODOS DELETE CON ID----##########################################################
 
-# @app.route('/user/<int:id_us>/favorite_planet/<int:id_pla>', methods = ['DELETE'])
-# def delete_favorite_planet(id_us,id_pla):
+@app.route('/user/<int:id_us>/favorite_planet/<int:id_pla>', methods = ['DELETE'])
+def delete_favorite_planet(id_us,id_pla):
 
-#     exist = Favorite_Planet.query.filter_by(id_user = id_us,id_planet = id_pla).first()
+    exist = Favorite_Planet.query.filter_by(id_user = id_us,id_planet = id_pla).first()
 
-#     if exist :
+    if exist :
+        db.session.delete(exist)
+        db.session.commit()
+        return jsonify({"msg": "Personaje eliminado de la tabla de Favorite_planet"})
 
-#         return jsonify({"msg": "este planeta no existe"}), 400
-    
-    
-    
+@app.route('/user/<int:id_us>/favorite_character/<int:id_cha>', methods = ['DELETE'])
+def delete_favorite_character(id_us,id_cha):
 
-#     return jsonify({"msg": "Personaje agregado a la tabla de Favorite_planet"})
+    exist = Favorite_Character.query.filter_by(id_user = id_us,id_character = id_cha).first()
 
+    if exist :
+        db.session.delete(exist)
+        db.session.commit()
+        return jsonify({"msg": "Personaje eliminado de la tabla de Favorite_Character"})
 
 # this only runs if `$ python src/app.py` is executed
 if __name__ == '__main__':
