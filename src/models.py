@@ -3,19 +3,24 @@ from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 
 class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    __tablename__ = 'user'
+    id_user = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(30),unique=False , nullable=False ) 
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(80), unique=False, nullable=False)
     is_active = db.Column(db.Boolean(), unique=False, nullable=False)
+    relation_favorite_character = db.relationship('Favorite_Character' , backref='user')
+    relation_favorite_planet = db.relationship('Favorite_Planet' , backref='user')
+
+
 
     def __repr__(self):
-        return '<User %r>' % self.username
+        return '<User %r>' % self.name
     
     def serialize(self):
         return {
             "name": self.name,
-            "id": self.id,
+            "id_user": self.id_user,
             "email": self.email,
 
             # do not serialize the password, its a security breach
@@ -25,22 +30,22 @@ class User(db.Model):
 class Character(db.Model):
     __tablename__ = 'character'
     name = db.Column(db.String(30),unique=False , nullable=False ) 
-    id = db.Column(db.Integer,primary_key=True)
-    birth_year = db.Column(db.String(10),unique=False  , nullable=False )
-    eye_color = db.Column(db.String(10),unique=False  , nullable=False )
-    gender = db.Column(db.String(10),unique=False  , nullable=False )
-    hair_color = db.Column(db.String(10),unique=False  , nullable=False )
-    height = db.Column(db.Integer,unique=False  , nullable=False )
-    homeworld = db.Column(db.String(200),unique=False  , nullable=False )
-    mass = db.Column(db.Integer,unique=False  , nullable=False )
-    skin_color = db.Column(db.String(30),unique=False  , nullable=False )
-    created = db.Column(db.DateTime,unique=False  , nullable=False )
-    edited = db.Column(db.DateTime,unique=False  , nullable=False )
-    species = db.Column(db.String(200),unique=False  , nullable=False )
-    starships = db.Column(db.String(200),unique=False  , nullable=False )
-    url = db.Column(db.String(200),unique=False  , nullable=False ) 
-    vehicles = db.Column(db.String(200),unique=False  , nullable=False )
-    films = db.Column(db.String(200),unique=False  , nullable=False )
+    id_character = db.Column(db.Integer,primary_key=True)
+    birth_year = db.Column(db.String(10))
+    eye_color = db.Column(db.String(10))
+    gender = db.Column(db.String(10))
+    hair_color = db.Column(db.String(10))
+    height = db.Column(db.Integer)
+    homeworld = db.Column(db.String(200))
+    mass = db.Column(db.Integer)
+    skin_color = db.Column(db.String(30))
+    created = db.Column(db.DateTime)
+    edited = db.Column(db.DateTime)
+    species = db.Column(db.String(200))
+    starships = db.Column(db.String(200))
+    url = db.Column(db.String(200)) 
+    vehicles = db.Column(db.String(200))
+    films = db.Column(db.String(200))
     relation_favorite = db.relationship('Favorite_Character' , backref='character')
 
     def __repr__(self):
@@ -48,7 +53,7 @@ class Character(db.Model):
     
     def serialize(self):
         return {
-            "id": self.id,
+            "id_character": self.id_character,
             "name": self.name,
             "birth_year": self.birth_year,
             "eye_color": self.eye_color,
@@ -71,21 +76,21 @@ class Character(db.Model):
 
 class Planet(db.Model):
     __tablename__ = 'planet'
-    name = db.Column(db.String(30),unique=False  , nullable=False ) 
-    id = db.Column(db.Integer,primary_key=True)
-    climate = db.Column(db.String(10),unique=False  , nullable=False )
-    created = db.Column(db.DateTime,unique=False  , nullable=False )
-    diameter = db.Column(db.Integer,unique=False  , nullable=False )
-    edited = db.Column(db.DateTime,unique=False  , nullable=False )
-    films = db.Column(db.String(200),unique=False  , nullable=False )
-    gravity = db.Column(db.Integer,unique=False  , nullable=False )
-    orbital_period = db.Column(db.Integer,unique=False  , nullable=False )
-    population = db.Column(db.Integer,unique=False  , nullable=False )
-    residents = db.Column(db.String(200),unique=False  , nullable=False )
-    rotation_period = db.Column(db.Integer,unique=False  , nullable=False )
-    surface_water = db.Column(db.Integer,unique=False  , nullable=False )
-    terrain = db.Column(db.String(20),unique=False  , nullable=False ) 
-    url = db.Column(db.String(200),unique=False  , nullable=False )
+    name = db.Column(db.String(30), nullable=False) 
+    id_planet = db.Column(db.Integer,primary_key=True)
+    climate = db.Column(db.String(10))
+    created = db.Column(db.DateTime)
+    diameter = db.Column(db.Integer)
+    edited = db.Column(db.DateTime)
+    films = db.Column(db.String(200))
+    gravity = db.Column(db.Integer)
+    orbital_period = db.Column(db.Integer)
+    population = db.Column(db.Integer)
+    residents = db.Column(db.String(200))
+    rotation_period = db.Column(db.Integer)
+    surface_water = db.Column(db.Integer)
+    terrain = db.Column(db.String(20)) 
+    url = db.Column(db.String(200))
     relation_favorite = db.relationship('Favorite_Planet' , backref='planet')
 
     def __repr__(self):
@@ -96,7 +101,7 @@ class Planet(db.Model):
         return {
 
             "name": self.name,
-            "id": self.id,
+            "id_planet": self.id_planet,
             "climate": self.climate,
             "created": self.created,
             "diameter": self.diameter,
@@ -115,18 +120,18 @@ class Planet(db.Model):
 
 class Favorite_Character(db.Model):
     __tablename__ = 'favorite_character'
-    id = db.Column(db.Integer,primary_key=True)
-    id_character = db.Column(db.Integer, db.ForeignKey('character.id'))
-    id_user = db.Column(db.Integer, db.ForeignKey('user.id'))
+    id_fav_char = db.Column(db.Integer,primary_key=True)
+    id_character = db.Column(db.Integer, db.ForeignKey('character.id_character'))
+    id_user = db.Column(db.Integer, db.ForeignKey('user.id_user'))
 
     def __repr__(self):
-        return '<Favorite_Character id_user=%r, id_character=%r>' % (self.id_user, self.id_people)
+       return '<Favorite_Character %r>' % self.id_fav_char
     
 
     def serialize(self):
         return {
 
-            "id": self.id,
+            "id": self.id_fav_char,
             "id_character": self.id_character,
             "id_user": self.id_user
     
@@ -134,19 +139,19 @@ class Favorite_Character(db.Model):
 
 class Favorite_Planet(db.Model):
     __tablename__ = 'favorite_planet'
-    id = db.Column(db.Integer,primary_key=True)
-    id_character = db.Column(db.Integer, db.ForeignKey('planet.id'))
-    id_user = db.Column(db.Integer, db.ForeignKey('user.id'))
+    id_fav_planet = db.Column(db.Integer,primary_key=True)
+    id_planet = db.Column(db.Integer, db.ForeignKey('planet.id_planet'))
+    id_user = db.Column(db.Integer, db.ForeignKey('user.id_user'))
 
     def __repr__(self):
-        return '<Favorite_Planet %r>' % self.id
+        return '<Favorite_Planet %r>' % self.id_fav_planet
     
 
     def serialize(self):
         return {
             
-            "id": self.id,
-            "id_character": self.id_planet,
+            "id": self.id_fav_planet,
+            "id_planet": self.id_planet,
             "id_user": self.id_user
     
         }
